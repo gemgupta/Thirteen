@@ -4,18 +4,25 @@ import Products from "./components/Shop/Products";
 import Notification from "./components/UI/Notification";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { sendCartData } from "./Store/CartItemSlice";
+import { sendCartData, fetchCartData } from "./Store/CartActions";
 let isInitial = true;
 function App() {
   const cart = useSelector((state) => state.CartItems);
   const responseNotification = useSelector((state) => state.Cart.responses);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCartData());
+  }, [dispatch]);
+
   useEffect(() => {
     if (isInitial) {
       isInitial = false;
       return;
     }
-    dispatch(sendCartData(cart));
+    if (cart.changed) {
+      dispatch(sendCartData(cart));
+    }
   }, [cart, dispatch]);
   return (
     <>
